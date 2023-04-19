@@ -4,7 +4,6 @@ from .forms import ShoppingCartItemForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.contrib.auth import logout
 from .forms import ProductForm
 
 
@@ -22,11 +21,6 @@ def add_product(request):
     else:
         form = ProductForm()
     return render(request, 'shop/add_product.html', {'form': form})
-
-
-def logout_view(request):
-    logout(request)
-    return render(request, 'registration/logout.html')
 
 
 def register(request):
@@ -51,7 +45,9 @@ def product_list(request):
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    cart_item, created = ShoppingCartItem.objects.get_or_create(user=request.user, product=product)
+    cart_item, created =\
+        ShoppingCartItem.objects.get_or_create(user=request.user,
+                                               product=product)
     if not created:
         cart_item.quantity += 1
         cart_item.save()
@@ -71,7 +67,8 @@ def update_cart(request, item_id):
     if form.is_valid():
         form.save()
         return redirect('shop:view_cart')
-    return render(request, 'shop/update_cart.html', {'form': form, 'cart_item': cart_item})
+    return render(request, 'shop/update_cart.html',
+                  {'form': form, 'cart_item': cart_item})
 
 
 @login_required
