@@ -11,24 +11,23 @@
       rel="stylesheet"
       href="{% static 'bootstrap/css/bootstrap.min.css' %}"
     />
-    <title>{% block title %}My Shopping Site{% endblock %}</title>
+    <title>{% block title %}Cellphone Doctor{% endblock %}</title>
     <style>
+      .navbar-nav .nav-item {
+        margin-right: 10px; /* Add gap between nav items */
+      }
       .navbar {
         background-color: #007bff;
       }
-
       .navbar .nav-item .nav-link {
         color: #fff;
       }
-
       .navbar .nav-item .nav-link:hover {
         background-color: #0069d9;
       }
-
       .profile-btn {
         margin-left: 10px;
       }
-
       .profile-btn i {
         margin-right: 5px;
       }
@@ -38,7 +37,7 @@
     <header>
       <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="{% url 'shop:product_list' %}"
-          >My Shopping Site</a
+          >Cellphone Doctor</a
         >
         <button
           class="navbar-toggler"
@@ -51,7 +50,10 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
           <ul class="navbar-nav">
             {% if user.is_authenticated %}
             <li class="nav-item">
@@ -62,28 +64,31 @@
               >
             </li>
             <li class="nav-item">
-              <a
-                class="btn btn-outline-light"
-                href="{% url 'shop:view_cart' %}"
+              <a class="btn btn-outline-light" href="{% url 'shop:view_cart' %}"
                 >Cart</a
               >
             </li>
             <li class="nav-item">
-              <a class="btn btn-outline-light" href="{% url 'logout' %}">Logout</a>
+              <a class="btn btn-outline-light" href="{% url 'logout' %}"
+                >Logout</a
+              >
             </li>
             <li class="nav-item">
-              <a class="btn btn-outline-light profile-btn" href="{% url 'shop:profile' request.user.username %}">
+              <a
+                class="btn btn-outline-light profile-btn"
+                href="{% url 'shop:profile' request.user.username %}"
+              >
                 Profile
               </a>
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="btn btn-outline-light" href="{% url 'login' %}">Login</a>
+              <a class="btn btn-outline-light" href="{% url 'login' %}"
+                >Login</a
+              >
             </li>
             <li class="nav-item">
-              <a
-                class="btn btn-outline-light"
-                href="{% url 'shop:register' %}"
+              <a class="btn btn-outline-light" href="{% url 'shop:register' %}"
                 >Register</a
               >
             </li>
@@ -92,16 +97,15 @@
         </div>
       </nav>
     </header>
+    <br />
     <main role="main" class="container">
       {% block content %} {% endblock %}
     </main>
-
     <footer class="footer mt-auto py-3 bg-light">
       <div class="container">
-        <span class="text-muted">My Shopping Site &copy; {{ now.year }}</span>
+        <span class="text-muted">Cellphone Doctor &copy; {{ now.year }}</span>
       </div>
     </footer>
-
     <script src="{% static 'bootstrap/js/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
   </body>

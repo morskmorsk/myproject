@@ -2,13 +2,21 @@
 
 {% block content %}
   <h2>Product List</h2>
-  <div class="product-list">
+  <div class="row">
     {% for product in products %}
-      <div class="product">
-        <h3>{{ product.name }}</h3>
-        <p>{{ product.description }}</p>
-        <p>${{ product.price }}</p>
-        <a href="{% url 'shop:add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h3 class="card-title">{{ product.name }}</h3>
+            <p class="card-text">{{ product.description }}</p>
+            <p class="card-text">${{ product.price }}</p>
+            <a href="{% url 'shop:add_to_cart' product.id %}" class="btn btn-primary">Add to Cart</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <p>No products available.</p>
       </div>
     {% endfor %}
   </div>
