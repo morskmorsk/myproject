@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{% if form.instance.pk %}Update{% else %}Create{% endif %} Work Order</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+      {{ form.as_p }}
+    </div>
+    <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Update{% else %}Create{% endif %} Work Order</button>
+  </form>
+{% endblock %}

@@ -56,6 +56,33 @@
         >
           <ul class="navbar-nav">
             {% if user.is_authenticated %}
+            <!-- Add drop-down menu for Work Orders -->
+            <li class="nav-item dropdown">
+              <a
+                class="btn btn-outline-light dropdown-toggle"
+                href="#"
+                id="workOrdersDropdown"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Work Orders
+              </a>
+              <div class="dropdown-menu" aria-labelledby="workOrdersDropdown">
+                <a
+                  class="dropdown-item"
+                  href="{% url 'work_orders:workorder_list' %}"
+                  >Work Orders List</a
+                >
+                <a
+                  class="dropdown-item"
+                  href="{% url 'work_orders:create_workorder' %}"
+                  >Create Work Order</a
+                >
+              </div>
+            </li>
+            <!-- ... -->
             <li class="nav-item">
               <a
                 class="btn btn-outline-light"
@@ -106,7 +133,12 @@
         <span class="text-muted">Cellphone Doctor &copy; {{ now.year }}</span>
       </div>
     </footer>
-    <script src="{% static 'bootstrap/js/jquery.min.js' %}"></script>
-    <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>
 </html>
