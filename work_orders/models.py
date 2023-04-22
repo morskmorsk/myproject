@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 
 class WorkOrder(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
     due_date = models.DateTimeField(blank=True, null=True)

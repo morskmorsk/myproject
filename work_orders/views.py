@@ -7,7 +7,7 @@ from .forms import WorkOrderForm
 
 @login_required
 def workorder_list(request):
-    workorders = WorkOrder.objects.all()
+    workorders = WorkOrder.objects.filter(user=request.user)
     return render(request, 'work_orders/workorder_list.html',
                   {'workorders': workorders})
 
@@ -25,7 +25,7 @@ def create_workorder(request):
         form = WorkOrderForm(request.POST)
         if form.is_valid():
             workorder = form.save(commit=False)
-            workorder.customer = request.user
+            workorder.user = request.user
             workorder.created_by = request.user
             workorder.created_date = timezone.now()
             workorder.save()
