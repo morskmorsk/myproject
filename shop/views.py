@@ -45,13 +45,20 @@ def product_list(request):
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    cart_item, created =\
-        ShoppingCartItem.objects.get_or_create(user=request.user,
-                                               product=product)
-    cart_item.price = product.price
+    
+    cart_item, created = ShoppingCartItem.objects.get_or_create(
+        user=request.user,
+        product=product,
+        defaults={
+            'shopping_cart_item_price': product.product_price,
+            'quantity': 1,
+        }
+    )
+
     if not created:
         cart_item.quantity += 1
         cart_item.save()
+
     return redirect('shop:view_cart')
 
 
@@ -65,9 +72,21 @@ def view_cart(request):
 def update_cart(request, item_id):
     cart_item = get_object_or_404(ShoppingCartItem, id=item_id)
     form = ShoppingCartItemForm(request.POST or None, instance=cart_item)
+
     if form.is_valid():
         form.save()
+        cart_item.refresh_from_db()  # Refresh the cart_item instance to get the updated quantity
+        
+        print("DEBUG: Product price:", cart_item.product.product_price)  # Debug print
+        print("DEBUG: Updated quantity:", cart_item.quantity)  # Debug print
+
+        cart_item.cart_item_price = cart_item.product.product_price * cart_item.quantity
+        cart_item.save()
+
+        print("DEBUG: Updated price:", cart_item.cart_item_price)  # Debug print
+
         return redirect('shop:view_cart')
+
     return render(request, 'shop/update_cart.html',
                   {'form': form, 'cart_item': cart_item})
 

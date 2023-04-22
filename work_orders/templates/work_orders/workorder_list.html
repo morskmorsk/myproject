@@ -7,22 +7,35 @@
     <thead>
       <tr>
         <th>ID</th>
-        <th>Title</th>
         <th>Description</th>
+        <th>Price</th>
         <th>Assigned To</th>
         <th>Due Date</th>
-        <th>Status</th>
+        <th>Completed</th>
+        <th>Customer</th>
       </tr>
     </thead>
     <tbody>
       {% for workorder in workorders %}
         <tr>
           <td>{{ workorder.id }}</td>
-          <td>{{ workorder.title }}</td>
           <td>{{ workorder.description }}</td>
+          <td>{{ workorder.work_order_price }}</td>
           <td>{{ workorder.assigned_to }}</td>
           <td>{{ workorder.due_date }}</td>
-          <td>{{ workorder.status }}</td>
+          <td>{{ workorder.completed }}</td>
+          <td>{{ user.username }}</td>
+          <td>
+            <a href="{% url 'work_orders:edit_workorder' workorder.id %}" class="btn btn-info"
+              >Update</a
+            >
+            <a
+              href="{% url 'work_orders:workorder_detail' workorder.id %}"
+              class="btn btn-danger"
+              >Details</a
+            >
+          </td>
+    
         </tr>
       {% empty %}
         <tr>

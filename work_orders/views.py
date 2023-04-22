@@ -14,7 +14,7 @@ def workorder_list(request):
 
 @login_required
 def workorder_detail(request, pk):
-    workorder = get_object_or_404(WorkOrder, pk=pk, customer=request.user)
+    workorder = get_object_or_404(WorkOrder, pk=pk)
     return render(request, 'work_orders/workorder_detail.html',
                   {'workorder': workorder})
     
@@ -28,6 +28,8 @@ def create_workorder(request):
             workorder.user = request.user
             workorder.created_by = request.user
             workorder.created_date = timezone.now()
+            workorder.due_date = timezone.now()
+            workorder.completed = False
             workorder.save()
             return redirect('work_orders:workorder_list')
     else:
@@ -37,7 +39,7 @@ def create_workorder(request):
 
 @login_required
 def update_workorder(request, pk):
-    workorder = get_object_or_404(WorkOrder, pk=pk, customer=request.user)
+    workorder = get_object_or_404(WorkOrder, pk=pk)
     if request.method == 'POST':
         form = WorkOrderForm(request.POST, instance=workorder)
         if form.is_valid():
@@ -48,5 +50,5 @@ def update_workorder(request, pk):
             return redirect('work_orders:workorder_list')
     else:
         form = WorkOrderForm(instance=workorder)
-    return render(request, 'work_orders/update_workorder.html',
+    return render(request, 'work_orders/workorder_form.html',
                   {'form': form, 'workorder': workorder})

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class Product(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    product_price = models.DecimalField(max_digits=10, decimal_places=2)
     image = models.ImageField(upload_to='products/', null=True, blank=True)
 
     def __str__(self):
@@ -16,22 +16,24 @@ class ShoppingCartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    shopping_cart_item_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return f'{self.quantity} of {self.product.name}'
-
-    def get_total_price(self):
-        return self.product.price * self.quantity
+    @property
+    def total_price(self):
+        return self.shopping_cart_item_price * self.quantity
 
 
 class WorkOrderItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+    work_order_item_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return f'{self.quantity} of {self.product.name}'
-
-    def get_total_price(self):
-        return self.product.price * self.quantity
+    
+    @property
+    def total_price(self):
+        return self.work_order_item_price * self.quantity

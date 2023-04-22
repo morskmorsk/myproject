@@ -19,11 +19,11 @@ from .models import ShoppingCartItem, Product
 class ShoppingCartItemForm(forms.ModelForm):
     class Meta:
         model = ShoppingCartItem
-        fields = ['quantity', 'price']
+        fields = ['quantity', 'shopping_cart_item_price']
 
 
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         # Update fields based on your Product model
-        fields = ['name', 'description', 'price', 'image']
+        fields = ['name', 'description', 'product_price', 'image']

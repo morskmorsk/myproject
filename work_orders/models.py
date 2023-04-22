@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 class WorkOrder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField()
-    created_date = models.DateTimeField(default=timezone.now)
+    work_order_price = models.DecimalField(max_digits=10, decimal_places=2)
+    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='workorder_assigned_to')
     due_date = models.DateTimeField(blank=True, null=True)
     completed = models.BooleanField(default=False)
     created_date = models.DateTimeField(default=timezone.now)

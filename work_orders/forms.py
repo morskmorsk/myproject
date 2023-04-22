@@ -5,4 +5,4 @@ from .models import WorkOrder
 class WorkOrderForm(ModelForm):
     class Meta:
         model = WorkOrder
-        fields = ['description', 'due_date', 'completed']
+        fields = ['description', 'work_order_price', 'assigned_to', 'due_date', 'completed']
