@@ -63,6 +63,9 @@
         >
           <ul class="navbar-nav">
             {% if user.is_authenticated %}
+            <!-- Add this link within your navigation menu -->
+            <a class="nav-link" href="{% url 'shop:user_orders' %}">My Orders</a>
+
             <!-- Add drop-down menu for Work Orders -->
             <li class="nav-item dropdown">
               <a

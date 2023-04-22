@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>My Orders</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Created</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+        <tr>
+          <td>{{ order.id }}</td>
+          <td>{{ order.created }}</td>
+          <td>${{ order.get_total_cost }}</td>
+          <td>{{ order.paid|yesno:"Paid,Not Paid" }}</td>
+          <td>
+            <a href="{% url 'shop:user_order_detail' order.id %}" class="btn btn-info">View</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

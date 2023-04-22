@@ -1,10 +1,57 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product, ShoppingCartItem
+from .models import Product, ShoppingCartItem, Order
 from .forms import ShoppingCartItemForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from .forms import ProductForm
+from .forms import OrderCreateForm
+
+
+@login_required
+def user_order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    order_items = ShoppingCartItem.objects.filter(order=order)
+    return render(request, 'shop/user_order_detail.html', {'order': order, 'order_items': order_items})
+
+
+@login_required
+def user_orders(request):
+    orders = Order.objects.filter(user=request.user)
+    return render(request, 'shop/user_orders.html', {'orders': orders})
+
+
+@login_required
+def order_success(request):
+    return render(request, 'shop/order_success.html')
+
+
+@login_required
+def checkout(request):
+    cart_items = ShoppingCartItem.objects.filter(user=request.user, order=None)
+
+    if not cart_items:
+        return redirect('shop:view_cart')
+
+    if request.method == 'POST':
+        form = OrderCreateForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.user = request.user
+            order.save()
+
+            for cart_item in cart_items:
+                cart_item.order = order
+                cart_item.save()
+
+            # Redirect to a payment process or a success page
+            return redirect('shop:order_success')
+
+    else:
+        form = OrderCreateForm()
+
+    return render(request, 'shop/checkout.html', {'form': form, 'cart_items': cart_items})
+
 
 
 @login_required
@@ -42,13 +89,79 @@ def product_list(request):
     return render(request, 'shop/product_list.html', {'products': products})
 
 
+# @login_required
+# def add_to_cart(request, product_id):
+#     product = get_object_or_404(Product, id=product_id)
+
+#     cart_item, created = ShoppingCartItem.objects.get_or_create(
+#         user=request.user,
+#         product=product,
+#         defaults={
+#             'shopping_cart_item_price': product.product_price,
+#             'quantity': 1,
+#         }
+#     )
+
+#     if not created:
+#         cart_item.quantity += 1
+#         cart_item.save()
+
+#     return redirect('shop:view_cart')
+
+
+# @login_required
+# def add_to_cart(request, product_id):
+#     product = get_object_or_404(Product, id=product_id)
+
+#     cart_item, created = ShoppingCartItem.objects.get_or_create(
+#         user=request.user,
+#         product=product,
+#         defaults={
+#             'shopping_cart_item_price': product.product_price,
+#             'quantity': 1,
+#         }
+#     )
+
+#     if not created:
+#         cart_item.quantity += 1
+#         cart_item.save()
+
+#     print("DEBUG: Cart Item Order:", cart_item.order)  # Debug print
+
+#     return redirect('shop:view_cart')
+
+
+# @login_required
+# def add_to_cart(request, product_id):
+#     product = get_object_or_404(Product, id=product_id)
+
+#     cart_item, created = ShoppingCartItem.objects.get_or_create(
+#         user=request.user,
+#         product=product,
+#         defaults={
+#             'shopping_cart_item_price': product.product_price,
+#             'quantity': 1,
+#         }
+#     )
+
+#     if not created:
+#         cart_item.quantity += 1
+#         cart_item.save()
+
+#     # Add this print statement
+#     print(f"DEBUG: Cart Item Order: {cart_item.order}")
+
+#     return redirect('shop:view_cart')
+
+
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    
+
     cart_item, created = ShoppingCartItem.objects.get_or_create(
         user=request.user,
         product=product,
+        order=None,  # Add this line
         defaults={
             'shopping_cart_item_price': product.product_price,
             'quantity': 1,
@@ -64,8 +177,10 @@ def add_to_cart(request, product_id):
 
 @login_required
 def view_cart(request):
-    cart_items = ShoppingCartItem.objects.filter(user=request.user)
-    return render(request, 'shop/view_cart.html', {'cart_items': cart_items})
+    cart_items = ShoppingCartItem.objects.filter(user=request.user, order=None)
+    print("DEBUG: Cart Items:", cart_items)  # Debug print
+    cart_total = sum(item.total_price for item in cart_items)
+    return render(request, 'shop/view_cart.html', {'cart_items': cart_items, 'cart_total': cart_total})
 
 
 @login_required
@@ -76,7 +191,7 @@ def update_cart(request, item_id):
     if form.is_valid():
         form.save()
         cart_item.refresh_from_db()  # Refresh the cart_item instance to get the updated quantity
-        
+
         print("DEBUG: Product price:", cart_item.product.product_price)  # Debug print
         print("DEBUG: Updated quantity:", cart_item.quantity)  # Debug print
 
